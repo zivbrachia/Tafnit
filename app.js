@@ -51,6 +51,40 @@ bot.dialog('personal_name', [
     }
 ]);
 
+bot.dialog("dvp_file", [
+    function (session, args, next) {
+        session.dialogData.dvp_query_detailed = {};
+        builder.Prompts.time(session, "לאיזה תאריך/תאריכים תרצה את הקובץ?", {/*retryPrompt: "sss",*/ maxRetries: 1});
+    },
+    function (session, results, next) {
+        session.dialogData.dvp_query_detailed.from = results.response.resolution.start;
+        if (results.response.resolution.end) {
+            session.dialogData.dvp_query_detailed.to = results.response.resolution.end;
+        }
+        session.send("I'm working on your dvp file for: " + moment(session.dialogData.dvp_query_detailed.from).format("DD/MM/YYYY") + "-" + moment(session.dialogData.dvp_query_detailed.to).format("DD/MM/YYYY"))
+        session.endDialog();
+    }
+]).triggerAction({
+    matches: [/^שליחת קובץ דיווח שעות/i]
+});
+
+bot.dialog("dvp_query_detailed", [
+    function (session, args, next) {
+        session.dialogData.dvp_query_detailed = {};
+        builder.Prompts.time(session, "לאיזה תאריך/תאריכים תרצה פירוט?", {/*retryPrompt: "sss",*/ maxRetries: 1});
+    },
+    function (session, results, next) {
+        session.dialogData.dvp_query_detailed.from = results.response.resolution.start;
+        if (results.response.resolution.end) {
+            session.dialogData.dvp_query_detailed.to = results.response.resolution.end;
+        }
+        session.send("I'm working on your dvp for: " + moment(session.dialogData.dvp_query_detailed.from).format("DD/MM/YYYY") + "-" + moment(session.dialogData.dvp_query_detailed.to).format("DD/MM/YYYY"))
+        session.endDialog();
+    }
+]).triggerAction({
+    matches: [/^דיווח שעות מפורט/i]
+});
+
 bot.dialog("dvp_query", [
     function (session, args, next) {
         // init
@@ -62,11 +96,12 @@ bot.dialog("dvp_query", [
             session.send(resources.string.no_dvp);
         }
         else {
-            session.send("החודש (08/2017) עבדת סה'כ: 8 שעות");
-            session.send("היום (31/08/2017) עבדת סה'כ: 8 שעות");
-            session.send("לפירוט|לקובץ טקסט")
+            session.send("החודש (08/2017): עבדת סה'כ 8 שעות, עבור 2 לקוחות");
+            session.send("היום (31/08/2017): עבדת סה'כ 8 שעות, עבור 2 לקוחות");
+            builder.Prompts.choice(session, "איך תרצה להמשיך?", "דיווח שעות מפורט|שליחת קובץ דיווח שעות", {listStyle: builder.ListStyle.button, maxRetries:0});
+            session.endDialog();
 
-            dates.forEach(function (date) {
+            /*dates.forEach(function (date) {
                 let msg = "Date: " + date + "\n\r";
                 let customers_array = Object.keys(dvp_history[date].customers);
                 customers_array.forEach(function (customer) {
@@ -74,9 +109,17 @@ bot.dialog("dvp_query", [
                     msg = msg + resources.string.customer + ": " + customer + " " + Number(dvp_history[date].customers[customer].total_hours).toFixed(2) + " " + resources.string.hours +"\n\r";
                     session.send(msg);
                 });
-            });
+            });*/
         }
-        session.endDialog();
+        //session.endDialog();
+    },
+    function (session, results, next) {
+        session.dialogData.answer = session.message.text;
+        if (session.dialogData.answer==="לדיווח שעות מפורט") {
+            session.replaceDialog("dvp_query_detailed");
+        } else if (session.dialogData.answer==="לשליחת קובץ דיווח שעות") {
+            session.replaceDialog('/');
+        }
     }
 ]).triggerAction({
     matches: [/^שאילתא לדיווח שעות/i]
