@@ -12,7 +12,7 @@
  */
 "use strict"
 
-require('./config.js');
+//require('./config.js');
 
 let restify = require('restify');
 let builder = require('botbuilder');
