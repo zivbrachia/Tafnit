@@ -71,7 +71,7 @@ bot.dialog("dvp_query", [
                 let customers_array = Object.keys(dvp_history[date].customers);
                 customers_array.forEach(function (customer) {
                     console.log(dvp_history[date].customers[customer].total_hours);
-                    msg = msg + resources.string.customer + ": " + customer + " " + dvp_history[date].customers[customer].total_hours + " " + resource.string.hours +"\n\r";
+                    msg = msg + resources.string.customer + ": " + customer + " " + Number(dvp_history[date].customers[customer].total_hours).toFixed(2) + " " + resources.string.hours +"\n\r";
                     session.send(msg);
                 });
             });
