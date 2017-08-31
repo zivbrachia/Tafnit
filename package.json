@@ -1,0 +1,25 @@
+{
+  "name": "tafnit",
+  "version": "1.0.0",
+  "description": "tafnit erp",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zivbrachia/Tafnit.git"
+  },
+  "author": "Ziv Brachia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zivbrachia/Tafnit/issues"
+  },
+  "homepage": "https://github.com/zivbrachia/Tafnit#readme",
+  "dependencies": {
+    "api-ai-recognizer": "^1.1.1",
+    "botbuilder": "^3.9.1",
+    "moment-timezone": "^0.5.13",
+    "restify": "^5.2.0"
+  }
+}
